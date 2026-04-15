@@ -38,7 +38,7 @@ http://api-knowledgebase.mlp.cn-beijing.volces.com/api/knowledge/service/chat
   "tools": [{
     "type": "knowledge",
     "knowledge": {
-      "knowledge_base_ids": ["c12e30bf-6ab7-42dc-85b2-d0686c966ffb"],
+      "knowledge_base_ids": ["YOUR_API_KEY"],
       "top_k": 5
     }
   }]
@@ -48,7 +48,7 @@ http://api-knowledgebase.mlp.cn-beijing.volces.com/api/knowledge/service/chat
 **现在**:
 ```json
 {
-  "service_resource_id": "kb-service-1cad042ac4cd788d",
+  "service_resource_id": "YOUR_SERVICE_RESOURCE_ID",
   "messages": [{"role": "user", "content": "问题"}],
   "stream": false
 }
@@ -61,14 +61,14 @@ http://api-knowledgebase.mlp.cn-beijing.volces.com/api/knowledge/service/chat
 VOLCANO_KNOWLEDGE_ENDPOINT=https://ark.cn-beijing.volces.com/api/v3
 VOLCANO_ACCESS_KEY=xxx
 VOLCANO_SECRET_KEY=xxx
-VOLCANO_KNOWLEDGE_BASE_ID=c12e30bf-6ab7-42dc-85b2-d0686c966ffb
+VOLCANO_KNOWLEDGE_BASE_ID=YOUR_API_KEY
 ```
 
 **现在**:
 ```bash
 VOLCANO_KNOWLEDGE_ENDPOINT=api-knowledgebase.mlp.cn-beijing.volces.com
 VOLCANO_API_KEY=xxx
-VOLCANO_SERVICE_RESOURCE_ID=kb-service-1cad042ac4cd788d
+VOLCANO_SERVICE_RESOURCE_ID=YOUR_SERVICE_RESOURCE_ID
 ```
 
 ## 文件变更清单

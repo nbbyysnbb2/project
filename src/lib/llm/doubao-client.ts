@@ -48,7 +48,7 @@ export interface StreamChunk {
  * 豆包 API 配置
  */
 const DOUBAO_CONFIG = {
-  apiKey: process.env.DOUBAO_API_KEY || 'c12e30bf-6ab7-42dc-85b2-d0686c966ffb',
+  apiKey: process.env.DOUBAO_API_KEY || '',
   baseUrl: process.env.DOUBAO_API_ENDPOINT || 'https://ark.cn-beijing.volces.com/api/v3/responses',
   chatUrl: 'https://ark.cn-beijing.volces.com/api/v3/chat/completions',
   model: process.env.DOUBAO_MODEL || 'doubao-seed-2-0-pro-260215',

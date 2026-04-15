@@ -83,7 +83,7 @@ htmlPublishNode - 发布到阿里云OSS
   - Volcano Service ID: kb-service-aaa0c32412ac306e
   - TopK: 5
 - **LangGraph方案**: 复用现有的 `volcano-knowledge.ts`
-  - ServiceResourceId: `kb-service-1cad042ac4cd788d`
+  - ServiceResourceId: `YOUR_SERVICE_RESOURCE_ID`
   - TopK: 5
 
 ### 3. LLM分析

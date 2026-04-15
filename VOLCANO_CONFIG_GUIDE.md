@@ -3,7 +3,7 @@
 ## 当前状态
 
 ✅ 已集成火山引擎知识库框架
-✅ ServiceResourceId 已配置：`kb-service-1cad042ac4cd788d`
+✅ ServiceResourceId 已配置：`YOUR_SERVICE_RESOURCE_ID`
 ⚠️ 需要补充 API Key
 
 ## 配置步骤
@@ -27,7 +27,7 @@ VOLCANO_API_KEY=你的API_Key
 ```bash
 VOLCANO_KNOWLEDGE_ENDPOINT=api-knowledgebase.mlp.cn-beijing.volces.com
 VOLCANO_API_KEY=你的API_Key
-VOLCANO_SERVICE_RESOURCE_ID=kb-service-1cad042ac4cd788d
+VOLCANO_SERVICE_RESOURCE_ID=YOUR_SERVICE_RESOURCE_ID
 ```
 
 ### 3. 测试配置
@@ -51,7 +51,7 @@ curl -X POST -H "Content-Type: application/json" \
 | 参数 | 说明 | 示例 |
 |------|------|------|
 | `VOLCANO_API_KEY` | 火山引擎知识库 API Key | `your_apikey` |
-| `VOLCANO_SERVICE_RESOURCE_ID` | 知识库服务ID | `kb-service-1cad042ac4cd788d` ✅ |
+| `VOLCANO_SERVICE_RESOURCE_ID` | 知识库服务ID | `YOUR_SERVICE_RESOURCE_ID` ✅ |
 
 #### 可选参数
 
@@ -95,7 +95,7 @@ POST http://api-knowledgebase.mlp.cn-beijing.volces.com/api/knowledge/service/ch
 **请求体**:
 ```json
 {
-  "service_resource_id": "kb-service-1cad042ac4cd788d",
+  "service_resource_id": "YOUR_SERVICE_RESOURCE_ID",
   "messages": [
     {
       "role": "user",
@@ -138,7 +138,7 @@ POST http://api-knowledgebase.mlp.cn-beijing.volces.com/api/knowledge/service/ch
 **A**:
 1. 登录火山引擎控制台
 2. 进入"知识库管理"
-3. 查看知识库服务 `kb-service-1cad042ac4cd788d`
+3. 查看知识库服务 `YOUR_SERVICE_RESOURCE_ID`
 4. 确认是否有上传的文档
 
 ### Q5: Python示例中的SignerV4需要吗？
@@ -220,7 +220,7 @@ apikey = "your apikey"
 query = "你的问题"
 
 request_params = {
-    "service_resource_id": "kb-service-1cad042ac4cd788d",
+    "service_resource_id": "YOUR_SERVICE_RESOURCE_ID",
     "messages": [{"role": "user", "content": query}],
     "stream": False
 }
@@ -243,7 +243,7 @@ response = requests.post(
 const config = {
   endpoint: "api-knowledgebase.mlp.cn-beijing.volces.com",
   apiKey: "your apikey",
-  serviceResourceId: "kb-service-1cad042ac4cd788d"
+  serviceResourceId: "YOUR_SERVICE_RESOURCE_ID"
 };
 
 const response = await fetch(

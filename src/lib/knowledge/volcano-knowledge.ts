@@ -21,8 +21,8 @@ const KNOWLEDGE_CONFIG = {
   // 火山引擎知识库配置
   volcanoKnowledge: {
     endpoint: process.env.VOLCANO_KNOWLEDGE_ENDPOINT || 'api-knowledgebase.mlp.cn-beijing.volces.com',
-    apiKey: process.env.VOLCANO_API_KEY || 'c12e30bf-6ab7-42dc-85b2-d0686c966ffb',
-    serviceResourceId: process.env.VOLCANO_SERVICE_RESOURCE_ID || 'kb-service-1cad042ac4cd788d',
+    apiKey: process.env.VOLCANO_API_KEY || '',
+    serviceResourceId: process.env.VOLCANO_SERVICE_RESOURCE_ID || '',
   },
 };
 

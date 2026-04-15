@@ -9,7 +9,7 @@
 ### 1. 豆包 LLM API
 - **配置文件**: `src/lib/llm/doubao-client.ts`
 - **默认值**:
-  - API Key: `c12e30bf-6ab7-42dc-85b2-d0686c966ffb`
+  - API Key: `YOUR_API_KEY`
   - API Endpoint: `https://ark.cn-beijing.volces.com/api/v3/responses`
   - Model: `doubao-seed-2-0-pro-260215`
 - **功能**: 提供聊天对话、思考能力、图像分析
@@ -18,8 +18,8 @@
 - **配置文件**: `src/lib/knowledge/volcano-knowledge.ts`
 - **默认值**:
   - Endpoint: `api-knowledgebase.mlp.cn-beijing.volces.com`
-  - API Key: `c12e30bf-6ab7-42dc-85b2-d0686c966ffb`
-  - Service Resource ID: `kb-service-1cad042ac4cd788d`
+  - API Key: `YOUR_API_KEY`
+  - Service Resource ID: `YOUR_SERVICE_RESOURCE_ID`
 - **功能**: 提供装修知识检索
 
 ### 3. 阿里云 OSS

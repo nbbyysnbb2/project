@@ -93,7 +93,7 @@ async function identifySkill(
       const response = await fetch('https://ark.cn-beijing.volces.com/api/v3/responses', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${process.env.DOUBAO_API_KEY || 'c12e30bf-6ab7-42dc-85b2-d0686c966ffb'}`,
+          'Authorization': `Bearer ${process.env.DOUBAO_API_KEY || ''}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
