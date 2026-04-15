@@ -1,0 +1,569 @@
+schema_version: 1.0.0
+name: decoration
+id: 7579449153106133030
+description: "装修报价单风险识别"
+mode: workflow
+icon: plugin_icon/workflow.png
+nodes:
+    - id: "100001"
+      type: start
+      title: 开始
+      icon: https://lf3-static.bytednsdoc.com/obj/eden-cn/dvsmryvd_avi_dvsm/ljhwZthlaukjlkulzlp/icon/icon-Start-v2.jpg
+      description: "工作流的起始节点，用于设定启动工作流需要的信息"
+      position:
+        x: 180
+        y: 119
+      parameters:
+        node_outputs:
+            input:
+                type: file
+                required: true
+                value: null
+    - id: "900001"
+      type: end
+      title: 结束
+      icon: https://lf3-static.bytednsdoc.com/obj/eden-cn/dvsmryvd_avi_dvsm/ljhwZthlaukjlkulzlp/icon/icon-End-v2.jpg
+      description: "工作流的最终节点，用于返回工作流运行后的结果信息"
+      position:
+        x: 2940
+        y: 106
+      parameters:
+        node_inputs:
+            - name: url
+              input:
+                type: string
+                value:
+                    path: online_url
+                    ref_node: "150169"
+            - name: output
+              input:
+                type: object
+                value:
+                    path: structured_output
+                    ref_node: "129061"
+        terminatePlan: returnVariables
+    - id: "129061"
+      type: llm
+      title: 大模型
+      icon: https://lf3-static.bytednsdoc.com/obj/eden-cn/dvsmryvd_avi_dvsm/ljhwZthlaukjlkulzlp/icon/icon-LLM-v2.jpg
+      description: "调用大语言模型,使用变量和提示词生成回复"
+      version: "3"
+      position:
+        x: 1560
+        y: 80
+      parameters:
+        fcParamVar:
+            knowledgeFCParam: {}
+        llmParam:
+            - name: generationDiversity
+              input:
+                type: string
+                value: default_val
+            - name: apiMode
+              input:
+                type: integer
+                value: "0"
+            - name: temperature
+              input:
+                type: float
+                value: "0.5"
+            - name: topP
+              input:
+                type: float
+                value: "1"
+            - name: frequencyPenalty
+              input:
+                type: float
+                value: "0"
+            - name: maxTokens
+              input:
+                type: integer
+                value: "8192"
+            - name: spCurrentTime
+              input:
+                type: boolean
+                value: false
+            - name: spAntiLeak
+              input:
+                type: boolean
+                value: false
+            - name: thinkingType
+              input:
+                type: string
+                value: enabled
+            - name: responseFormat
+              input:
+                type: integer
+                value: "2"
+            - name: modelName
+              input:
+                type: string
+                value: 豆包·1.8·深度思考
+            - name: modelType
+              input:
+                type: integer
+                value: "1768187121"
+            - name: parameters
+              input:
+                type: object
+                properties:
+                    max_completion_tokens:
+                        type: integer
+                        value: "0"
+                    reasoning_effort:
+                        type: string
+                        value: low
+                value: null
+            - name: prompt
+              input:
+                type: string
+                value: ""
+            - name: enableChatHistory
+              input:
+                type: boolean
+                value: false
+            - name: chatHistoryRound
+              input:
+                type: integer
+                value: "3"
+            - name: systemPrompt
+              input:
+                type: string
+                value: |-
+                    你是一位专业的装修报价单审核专家。你的任务是参考室内装修知识{{knowledge}}仔细分析装修报价单{{file}}，识别其中可能存在的问题。
+
+                    分析维度：
+                    1. 价格合理性：是否存在明显高于或低于市场价的项目
+                    2. 项目完整性：是否遗漏了必要的装修项目
+                    3. 材料规格：材料品牌、型号、规格是否明确
+                    4. 工艺说明：施工工艺是否详细说明
+                    5. 计量单位：面积、数量计算是否准确
+                    6. 隐藏费用：是否存在模糊不清的收费项目
+                    7. 合同条款：付款方式、质保期等是否合理
+
+                    对每个问题标注：问题类别、严重程度（high/medium/low）、具体描述、位置、改进建议。
+
+                    最后给出：整体评分（0-100分）、总体评价、风险等级（high/medium/low）。
+            - name: stableSystemPrompt
+              input:
+                type: string
+                value: ""
+            - name: canContinue
+              input:
+                type: boolean
+                value: false
+            - name: loopPromptVersion
+              input:
+                type: string
+                value: ""
+            - name: loopPromptName
+              input:
+                type: string
+                value: ""
+            - name: loopPromptId
+              input:
+                type: string
+                value: ""
+        node_inputs:
+            - name: file
+              input:
+                type: string
+                value:
+                    path: pdf_content
+                    ref_node: "169436"
+            - name: knowledge
+              input:
+                type: string
+                value:
+                    path: outputList.output
+                    ref_node: "196637"
+        node_outputs:
+            reasoning_content:
+                type: string
+                value: null
+            structured_output:
+                type: object
+                properties:
+                    file_source:
+                        type: string
+                        value: null
+                        description: 报价单位、报价日期、联系人、电话等含有报价单来源信息
+                    high_severity_count:
+                        type: string
+                        value: null
+                        description: 高风险登记问题数量
+                    issues:
+                        type: list
+                        items:
+                            type: object
+                            properties:
+                                category:
+                                    type: string
+                                    value: null
+                                    description: 问题所属类别
+                                description:
+                                    type: string
+                                    value: null
+                                    description: 问题详细描述
+                                location:
+                                    type: string
+                                    value: null
+                                    description: 问题出现位置
+                                recommendation:
+                                    type: string
+                                    value: null
+                                    description: 问题整改建议
+                                severity:
+                                    type: string
+                                    value: null
+                                    description: 问题严重程度
+                            value: null
+                        value: null
+                        description: 报价单问题列表
+                    issues_count:
+                        type: string
+                        value: null
+                        description: 问题数量
+                    overall_score:
+                        type: float
+                        value: null
+                        description: 报价单整体评分（0-100）
+                    proprietor:
+                        type: string
+                        value: null
+                        description: 施工地址、施工时间等业主信息
+                    risk_level:
+                        type: string
+                        value: null
+                        description: 报价单整体风险等级仅从："high", "medium","low"中选择
+                    summary:
+                        type: string
+                        value: null
+                value: null
+                description: 输出
+        settingOnError:
+            processType: 1
+            retryTimes: 0
+            switch: false
+            timeoutMs: 180000
+    - id: "169436"
+      type: plugin
+      title: LinkReaderPlugin
+      icon: https://lf3-static.bytednsdoc.com/obj/eden-cn/dvsmryvd_avi_dvsm/ljhwZthlaukjlkulzlp/icon/icon-Plugin-v2.jpg
+      description: "当你需要获取网页、pdf、doc、docx、xlsx、csv、text 内容时，使用此工具，可以获取url链接下的标题和内容。由于个别网站自身站点限制，无法获取网页内容。"
+      position:
+        x: 640
+        y: 106
+      parameters:
+        apiParam:
+            - name: apiID
+              input:
+                type: string
+                value: "7379227817307029513"
+            - name: apiName
+              input:
+                type: string
+                value: "LinkReaderPlugin"
+            - name: pluginID
+              input:
+                type: string
+                value: "7379227817307013129"
+            - name: pluginName
+              input:
+                type: string
+                value: "链接读取"
+            - name: pluginVersion
+              input:
+                type: string
+                value: ""
+            - name: tips
+              input:
+                type: string
+                value: ""
+            - name: outDocLink
+              input:
+                type: string
+                value: ""
+        node_inputs:
+            - name: url
+              input:
+                value:
+                    path: input
+                    ref_node: "100001"
+        node_outputs:
+            code:
+                type: integer
+                value: null
+                description: 错误码
+            data:
+                type: object
+                properties:
+                    content:
+                        type: string
+                        value: null
+                    images:
+                        type: list
+                        items:
+                            type: object
+                            properties:
+                                alt:
+                                    type: string
+                                    value: null
+                                height:
+                                    type: integer
+                                    value: null
+                                title:
+                                    type: string
+                                    value: null
+                                url:
+                                    type: string
+                                    value: null
+                                width:
+                                    type: integer
+                                    value: null
+                            value: null
+                        value: null
+                    title:
+                        type: string
+                        value: null
+                value: null
+                description: 网页的内容
+            err_msg:
+                type: string
+                value: null
+                description: 错误信息
+            error_code:
+                type: string
+                value: null
+                description: 错误码
+            error_msg:
+                type: string
+                value: null
+                description: 错误信息
+            message:
+                type: string
+                value: null
+                description: 错误信息
+            pdf_content:
+                type: string
+                value: null
+                description: pdf的内容
+        settingOnError:
+            processType: 1
+            retryTimes: 0
+            timeoutMs: 180000
+    - id: "149605"
+      type: code
+      title: 代码
+      icon: https://lf3-static.bytednsdoc.com/obj/eden-cn/dvsmryvd_avi_dvsm/ljhwZthlaukjlkulzlp/icon/icon-Code-v2.jpg
+      description: "编写代码，处理输入变量来生成返回值"
+      version: v2
+      position:
+        x: 2020
+        y: 106
+      parameters:
+        code: "import json\nimport ast\nfrom datetime import datetime\nfrom typing import Dict, Any\n\nasync def main(args: Any) -> Dict[str, Any]:\n    \"\"\"\n    最终修复版：\n    1. 彻底解决统计数据不显示问题\n    2. 移除评分等级解读模块\n    \"\"\"\n    # ========== 初始化所有变量（确保有默认值） ==========\n    proprietor = \"\"\n    file_source = \"\"\n    summary = \"\"\n    risk_level = \"low\"\n    overall_score = 0.0\n    issues_count = 0\n    high_severity_count = 0\n    issues = []\n\n    # ========== 强制读取参数（增加多层兜底） ==========\n    try:\n        # 第一层：读取params\n        params_data = getattr(args, 'params', {}) if args else {}\n        # 第二层：读取args\n        args_data = params_data.get('args', {}) if isinstance(params_data, dict) else {}\n        \n        # 强制类型转换，确保数值正确\n        proprietor = str(args_data.get('proprietor', ''))\n        file_source = str(args_data.get('file_source', ''))\n        summary = str(args_data.get('summary', ''))\n        risk_level = str(args_data.get('risk_level', 'low')).lower()\n        \n        # 核心统计数据 - 双重校验（优先用传入值，无则用issues列表计算）\n        # 1. 优先读取传入的issues_count\n        issues_count = int(args_data.get('issues_count', 0)) if isinstance(args_data.get('issues_count'), (int, float)) else 0\n        # 2. 优先读取传入的high_severity_count\n        high_severity_count = int(args_data.get('high_severity_count', 0)) if isinstance(args_data.get('high_severity_count'), (int, float)) else 0\n        # 3. 读取overall_score\n        overall_score = float(args_data.get('overall_score', 0.0)) if isinstance(args_data.get('overall_score'), (int, float)) else 0.0\n        \n        # 处理问题列表\n        raw_issues = args_data.get('issues', [])\n        issues = []\n        if isinstance(raw_issues, list):\n            for item in raw_issues:\n                if isinstance(item, dict):\n                    clean_item = {\n                        \"category\": str(item.get('category', '')),\n                        \"severity\": str(item.get('severity', 'low')).lower(),\n                        \"description\": str(item.get('description', '')),\n                        \"location\": str(item.get('location', '')),\n                        \"recommendation\": str(item.get('recommendation', ''))\n                    }\n                    issues.append(clean_item)\n        \n        # 兜底计算：如果传入的统计数据为0，从issues列表重新计算\n        if issues_count == 0:\n            issues_count = len(issues)\n        if high_severity_count == 0:\n            high_severity_count = sum(1 for issue in issues if issue.get('severity') == 'high')\n            \n    except Exception as e:\n        # 任何异常都手动计算数据\n        proprietor = \"\"\n        file_source = \"\"\n        summary = \"\"\n        risk_level = \"low\"\n        overall_score = 0.0\n        issues = []\n        issues_count = len(issues)\n        high_severity_count = sum(1 for issue in issues if issue.get('severity') == 'high')\n\n    # ========== 核心统计计算（确保数据有值） ==========\n    # 1. 严重程度统计\n    severity_low = sum(1 for issue in issues if issue.get('severity') == 'low')\n    severity_medium = sum(1 for issue in issues if issue.get('severity') == 'medium')\n    severity_high = sum(1 for issue in issues if issue.get('severity') == 'high')\n    total_issues = len(issues) or issues_count  # 双重兜底\n    \n    # 占比计算\n    severity_low_pct = round((severity_low / total_issues * 100) if total_issues > 0 else 0, 1)\n    severity_medium_pct = round((severity_medium / total_issues * 100) if total_issues > 0 else 0, 1)\n    severity_high_pct = round((severity_high / total_issues * 100) if total_issues > 0 else 0, 1)\n    \n    # 2. 类别统计\n    category_labels = []\n    category_values = []\n    category_stats = {}\n    for issue in issues:\n        cate = issue.get('category', '未分类')\n        category_stats[cate] = category_stats.get(cate, 0) + 1\n    for cate, count in category_stats.items():\n        category_labels.append(cate)\n        category_values.append(count)\n    category_labels_str = \"['\" + \"', '\".join(category_labels) + \"']\" if category_labels else \"[]\"\n    category_values_str = \"[\" + \", \".join(map(str, category_values)) + \"]\" if category_values else \"[]\"\n    \n    # 3. 高风险占比（强制兜底，避免NaN）\n    high_risk_ratio = round((high_severity_count / issues_count * 100) if issues_count > 0 else 0, 1)\n    \n    # 4. 评分进度条\n    score_percentage = min(100, max(0, (overall_score / 100) * 100))\n    if score_percentage >= 80:\n        score_color = \"#4ade80\"\n    elif score_percentage >= 60:\n        score_color = \"#facc15\"\n    elif score_percentage >= 40:\n        score_color = \"#f97316\"\n    else:\n        score_color = \"#ef4444\"\n    \n    # 5. 风险等级颜色映射\n    risk_color_map = {\"low\": \"#10b981\", \"medium\": \"#f59e0b\", \"high\": \"#ef4444\"}\n    risk_bg_color_map = {\"low\": \"rgba(16, 185, 129, 0.15)\", \"medium\": \"rgba(245, 158, 11, 0.15)\", \"high\": \"rgba(239, 68, 68, 0.15)\"}\n    risk_border_color_map = {\"low\": \"rgba(16, 185, 129, 0.3)\", \"medium\": \"rgba(245, 158, 11, 0.3)\", \"high\": \"rgba(239, 68, 68, 0.3)\"}\n    current_risk_color = risk_color_map.get(risk_level, \"#10b981\")\n    current_risk_bg = risk_bg_color_map.get(risk_level, \"rgba(16, 185, 129, 0.15)\")\n    current_risk_border = risk_border_color_map.get(risk_level, \"rgba(16, 185, 129, 0.3)\")\n\n    # ========== 生成问题表格行 ==========\n    issue_rows = \"\"\n    for idx, issue in enumerate(issues):\n        category = issue.get('category', '')\n        severity = issue.get('severity', 'low')\n        description = issue.get('description', '')\n        location = issue.get('location', '')\n        recommendation = issue.get('recommendation', '')\n        issue_rows += f'''\n<tr class=\"issue-row\" data-index=\"{idx+1}\">\n  <td class=\"text-center font-medium\">{idx+1}</td>\n  <td>{category}</td>\n  <td>\n    <span class=\"severity-badge {severity}\">{severity.upper()}</span>\n  </td>\n  <td class=\"description-cell\">{description}</td>\n  <td>{location}</td>\n  <td class=\"recommendation-cell\">{recommendation}</td>\n</tr>'''\n\n    # ========== 生成统计表格行 ==========\n    severity_table_rows = f'''\n<tr>\n  <td>低风险</td>\n  <td class=\"text-center\">{severity_low}</td>\n  <td class=\"text-center\">{severity_low_pct}%</td>\n  <td>\n    <div class=\"score-progress\" style=\"width: 100%;\">\n      <div class=\"score-progress-bar\" style=\"width: {severity_low_pct}%; background-color: #10b981;\"></div>\n    </div>\n  </td>\n</tr>\n<tr>\n  <td>中风险</td>\n  <td class=\"text-center\">{severity_medium}</td>\n  <td class=\"text-center\">{severity_medium_pct}%</td>\n  <td>\n    <div class=\"score-progress\" style=\"width: 100%;\">\n      <div class=\"score-progress-bar\" style=\"width: {severity_medium_pct}%; background-color: #f59e0b;\"></div>\n    </div>\n  </td>\n</tr>\n<tr>\n  <td>高风险</td>\n  <td class=\"text-center\">{severity_high}</td>\n  <td class=\"text-center\">{severity_high_pct}%</td>\n  <td>\n    <div class=\"score-progress\" style=\"width: 100%;\">\n      <div class=\"score-progress-bar\" style=\"width: {severity_high_pct}%; background-color: #ef4444;\"></div>\n    </div>\n  </td>\n</tr>'''\n\n    category_table_rows = \"\"\n    for cate, count in category_stats.items():\n        pct = round((count / total_issues * 100) if total_issues > 0 else 0, 1)\n        category_table_rows += f'''\n<tr>\n  <td>{cate}</td>\n  <td class=\"text-center\">{count}</td>\n  <td class=\"text-center\">{pct}%</td>\n</tr>'''\n\n    # ========== 生成时间 ==========\n    now_iso = datetime.now().strftime(\"%Y-%m-%d %H:%M:%S\")\n    analysis_time = now_iso.replace(\" \", \"T\") + \"Z\"\n    risk_level_upper = risk_level.upper()\n\n    # ========== 最终HTML（移除评分等级解读，确保数据显示） ==========\n    html_content = f'''\n<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <title>装修报价单分析报告</title>\n  <link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap\" rel=\"stylesheet\">\n  <script src=\"https://cdn.jsdelivr.net/npm/chart.js\"></script>\n  <style>\n/* 基础样式 */\n* {{\n  margin: 0;\n  padding: 0;\n  box-sizing: border-box;\n  font-family: 'Inter', sans-serif;\n}}\n\nbody {{\n  background: #f9fafb;\n  color: #1f2937;\n  padding: 1rem;\n  line-height: 1.5;\n}}\n\n.container {{\n  max-width: 1200px;\n  margin: 2rem auto;\n  background: white;\n  border-radius: 1rem;\n  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);\n  padding: 2rem;\n}}\n\n.header {{\n  border-bottom: 2px solid #f3f4f6;\n  padding-bottom: 1.5rem;\n  margin-bottom: 2rem;\n  position: relative;\n}}\n\n.header::after {{\n  content: '';\n  position: absolute;\n  bottom: -2px;\n  left: 0;\n  width: 80px;\n  height: 2px;\n  background: linear-gradient(90deg, #6366f1, #8b5cf6);\n  border-radius: 9999px;\n}}\n\n.header h1 {{\n  font-size: 2rem;\n  font-weight: 700;\n  text-align: center;\n  background: linear-gradient(90deg, #6366f1, #8b5cf6);\n  -webkit-background-clip: text;\n  background-clip: text;\n  color: transparent;\n  margin-bottom: 1rem;\n}}\n\n.header-info {{\n  display: flex;\n  flex-wrap: wrap;\n  gap: 1.5rem;\n  justify-content: center;\n}}\n\n.header-info .info-item {{\n  background: #f9fafb;\n  padding: 0.5rem 1rem;\n  border-radius: 0.5rem;\n  border: 1px solid #e5e7eb;\n  font-size: 0.95rem;\n}}\n\n.header-info .info-item strong {{\n  color: #6366f1;\n}}\n\n/* 评分卡片 */\n.score-card {{\n  text-align: center;\n  padding: 2rem;\n  border-radius: 1rem;\n  margin-bottom: 2rem;\n  background: linear-gradient(135deg, rgba(99,102,241,0.05), rgba(139,92,246,0.05));\n  border: 1px solid #e5e7eb;\n}}\n\n.score {{\n  font-size: 4rem;\n  font-weight: 800;\n  margin: 1rem 0;\n  color: #111827;\n}}\n\n.score-progress {{\n  width: 80%;\n  height: 12px;\n  background: #e5e7eb;\n  border-radius: 9999px;\n  margin: 1rem auto;\n  overflow: hidden;\n}}\n\n.score-progress-bar {{\n  height: 100%;\n  border-radius: 9999px;\n  width: {score_percentage}%;\n  background: {score_color};\n  transition: width 1s ease;\n}}\n\n.risk-level {{\n  display: inline-block;\n  padding: 0.4rem 1.2rem;\n  border-radius: 9999px;\n  font-weight: 600;\n  text-transform: uppercase;\n  letter-spacing: 2px;\n  background: {current_risk_bg};\n  color: {current_risk_color};\n  border: 1px solid {current_risk_border};\n}}\n\n/* 总结模块 */\n.summary-section {{\n  background: #f9fafb;\n  padding: 1.5rem;\n  border-radius: 0.75rem;\n  margin-bottom: 2rem;\n  border-left: 4px solid #6366f1;\n}}\n\n.summary-section h2 {{\n  font-size: 1.3rem;\n  font-weight: 600;\n  margin-bottom: 0.8rem;\n  display: flex;\n  align-items: center;\n  gap: 0.5rem;\n}}\n\n.summary-section h2::before {{\n  content: '\U0001F4DD';\n  font-size: 1.2rem;\n}}\n\n.summary-section p {{\n  color: #4b5563;\n  line-height: 1.8;\n  text-indent: 2em;\n}}\n\n/* 统计卡片（重点：确保数据显示） */\n.stats-container {{\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));\n  gap: 1.5rem;\n  margin-bottom: 2rem;\n}}\n\n.stat-card {{\n  background: linear-gradient(135deg, #6366f1, #8b5cf6);\n  color: white;\n  padding: 1.5rem;\n  border-radius: 1rem;\n  text-align: center;\n  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);\n  transition: transform 0.3s ease;\n}}\n\n.stat-card.high-severity {{\n  background: linear-gradient(135deg, #ef4444, #f87171);\n}}\n\n.stat-card.risk-ratio {{\n  background: linear-gradient(135deg, #3b82f6, #60a5fa);\n}}\n\n.stat-card:hover {{\n  transform: translateY(-5px);\n}}\n\n.stat-label {{\n  font-size: 1.1rem;\n  font-weight: 500;\n  opacity: 0.9;\n  margin-bottom: 0.5rem;\n}}\n\n.stat-number {{\n  font-size: 3.5rem;\n  font-weight: 700;\n  line-height: 1.2;\n}}\n\n.stat-sub {{\n  font-size: 1.2rem;\n  opacity: 0.8;\n  margin-top: 0.5rem;\n}}\n\n/* 数据分析模块 */\n.data-analysis-section {{\n  background: #f9fafb;\n  padding: 1.5rem;\n  border-radius: 1rem;\n  margin-bottom: 2rem;\n  border: 1px solid #e5e7eb;\n}}\n\n.data-analysis-section h2 {{\n  font-size: 1.3rem;\n  font-weight: 600;\n  margin-bottom: 1.5rem;\n  display: flex;\n  align-items: center;\n  gap: 0.5rem;\n}}\n\n.data-analysis-section h2::before {{\n  content: '\U0001F4C8';\n  font-size: 1.2rem;\n}}\n\n.charts-container {{\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));\n  gap: 2rem;\n  margin-bottom: 2rem;\n}}\n\n.chart-card {{\n  background: white;\n  padding: 1.5rem;\n  border-radius: 0.75rem;\n  box-shadow: 0 1px 2px rgba(0,0,0,0.05);\n}}\n\n.chart-container {{\n  width: 100%;\n  height: 300px;\n}}\n\n/* 表格样式 */\n.data-stats-table {{\n  width: 100%;\n  border-collapse: collapse;\n  margin: 1rem 0;\n}}\n\n.data-stats-table th, .data-stats-table td {{\n  padding: 0.8rem 1rem;\n  border-bottom: 1px solid #e5e7eb;\n  text-align: left;\n}}\n\n.data-stats-table th {{\n  background: #f9fafb;\n  font-weight: 600;\n}}\n\n.text-center {{\n  text-align: center;\n}}\n\n.issues-table {{\n  width: 100%;\n  border-collapse: collapse;\n  background: white;\n  border-radius: 0.75rem;\n  overflow: hidden;\n  box-shadow: 0 1px 2px rgba(0,0,0,0.05);\n  margin-bottom: 2rem;\n}}\n\n.issues-table thead {{\n  background: linear-gradient(90deg, #1f2937, #111827);\n  color: white;\n}}\n\n.issues-table th {{\n  padding: 1rem;\n  font-weight: 600;\n  text-transform: uppercase;\n  font-size: 0.9rem;\n  letter-spacing: 0.5px;\n}}\n\n.issues-table td {{\n  padding: 1rem;\n  border-bottom: 1px solid #e5e7eb;\n  font-size: 0.95rem;\n}}\n\n.issue-row:hover {{\n  background: #f9fafb;\n}}\n\n/* 徽章样式 */\n.severity-badge {{\n  display: inline-block;\n  padding: 0.3rem 0.8rem;\n  border-radius: 9999px;\n  font-size: 0.8rem;\n  font-weight: 600;\n  text-transform: uppercase;\n}}\n\n.severity-badge.low {{\n  background: rgba(16,185,129,0.15);\n  color: #10b981;\n  border: 1px solid rgba(16,185,129,0.3);\n}}\n\n.severity-badge.medium {{\n  background: rgba(245,158,11,0.15);\n  color: #f59e0b;\n  border: 1px solid rgba(245,158,11,0.3);\n}}\n\n.severity-badge.high {{\n  background: rgba(239,68,68,0.15);\n  color: #ef4444;\n  border: 1px solid rgba(239,68,68,0.3);\n}}\n\n/* 响应式 */\n@media (max-width: 768px) {{\n  .container {{\n    padding: 1.5rem 1rem;\n  }}\n  \n  .charts-container {{\n    grid-template-columns: 1fr;\n  }}\n  \n  .chart-container {{\n    height: 250px;\n  }}\n  \n  .header-info {{\n    gap: 1rem;\n  }}\n  \n  .header-info .info-item {{\n    width: 100%;\n  }}\n}}\n\n@media (max-width: 480px) {{\n  .score {{\n    font-size: 3rem;\n  }}\n  \n  .stat-number {{\n    font-size: 2.5rem;\n  }}\n  \n  .chart-container {{\n    height: 200px;\n  }}\n}}\n\n/* 页脚 */\n.footer {{\n  border-top: 1px solid #e5e7eb;\n  padding-top: 1.5rem;\n  text-align: center;\n  color: #4b5563;\n  font-size: 0.9rem;\n  margin-top: 2rem;\n}}\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <!-- 头部 -->\n    <div class=\"header\">\n      <h1>装修报价单分析报告</h1>\n      <div class=\"header-info\">\n        <div class=\"info-item\">\n          <strong>工程信息:</strong> {proprietor or '未填写'}\n        </div>\n        <div class=\"info-item\">\n          <strong>报价信息:</strong> {file_source or '未填写'}\n        </div>\n        <div class=\"info-item\">\n          <strong>分析时间:</strong> {analysis_time}\n        </div>\n      </div>\n    </div>\n\n    <!-- 评分卡片 -->\n    <div class=\"score-card {risk_level}\">\n      <h2>整体评分</h2>\n      <div class=\"score\">0.0</div>\n      <div class=\"score-progress\">\n        <div class=\"score-progress-bar\"></div>\n      </div>\n      <div class=\"risk-level\">风险等级: {risk_level_upper}</div>\n    </div>\n\n    <!-- 总结模块（保留，移除评分解读） -->\n    <div class=\"summary-section\">\n      <h2>总体评价</h2>\n      <p>{summary or '暂无评价信息'}</p>\n    </div>\n\n    <!-- 统计卡片（强制显示数据） -->\n    <div class=\"stats-container\">\n      <div class=\"stat-card\">\n        <div class=\"stat-label\">发现问题总数</div>\n        <div class=\"stat-number\">{issues_count}</div>\n      </div>\n      <div class=\"stat-card high-severity\">\n        <div class=\"stat-label\">高风险问题数量</div>\n        <div class=\"stat-number\">{high_severity_count}</div>\n      </div>\n      <div class=\"stat-card risk-ratio\">\n        <div class=\"stat-label\">高风险占比</div>\n        <div class=\"stat-number\">{high_risk_ratio}%</div>\n        <div class=\"stat-sub\">({high_severity_count}/{issues_count})</div>\n      </div>\n    </div>\n\n    <!-- 数据分析 -->\n    <div class=\"data-analysis-section\">\n      <h2>多维度数据分析</h2>\n      \n      <!-- 图表 -->\n      <div class=\"charts-container\">\n        <div class=\"chart-card\">\n          <h3>问题严重程度分布</h3>\n          <div class=\"chart-container\">\n            <canvas id=\"severityPieChart\"></canvas>\n          </div>\n        </div>\n        <div class=\"chart-card\">\n          <h3>问题类别分布</h3>\n          <div class=\"chart-container\">\n            <canvas id=\"categoryBarChart\"></canvas>\n          </div>\n        </div>\n      </div>\n\n      <!-- 严重程度表格 -->\n      <div style=\"margin-top: 2rem;\">\n        <h3 style=\"font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem;\">严重程度分布详情</h3>\n        <table class=\"data-stats-table\">\n          <thead>\n            <tr>\n              <th>风险等级</th>\n              <th class=\"text-center\">数量</th>\n              <th class=\"text-center\">占比</th>\n              <th>占比可视化</th>\n            </tr>\n          </thead>\n          <tbody>\n            {severity_table_rows if total_issues > 0 else '<tr><td colspan=\"4\" class=\"text-center py-4 text-gray-500\">暂无数据</td></tr>'}\n          </tbody>\n        </table>\n      </div>\n\n      <!-- 类别表格 -->\n      <div style=\"margin-top: 2rem;\">\n        <h3 style=\"font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem;\">问题类别分布详情</h3>\n        <table class=\"data-stats-table\">\n          <thead>\n            <tr>\n              <th>问题类别</th>\n              <th class=\"text-center\">数量</th>\n              <th class=\"text-center\">占比</th>\n            </tr>\n          </thead>\n          <tbody>\n            {category_table_rows if category_stats else '<tr><td colspan=\"3\" class=\"text-center py-4 text-gray-500\">暂无数据</td></tr>'}\n          </tbody>\n        </table>\n      </div>\n    </div>\n\n    <!-- 问题列表 -->\n    <div style=\"margin-bottom: 2rem;\">\n      <h2 style=\"font-size: 1.3rem; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;\">\n        <span>⚠️</span> 问题详情\n      </h2>\n      <table class=\"issues-table\">\n        <thead>\n          <tr>\n            <th class=\"text-center\">序号</th>\n            <th>问题类别</th>\n            <th>严重程度</th>\n            <th>问题描述</th>\n            <th>问题位置</th>\n            <th>整改建议</th>\n          </tr>\n        </thead>\n        <tbody>\n          {issue_rows if issues else '<tr><td colspan=\"6\" class=\"text-center py-4 text-gray-500\">暂无问题数据</td></tr>'}\n        </tbody>\n      </table>\n    </div>\n\n    <!-- 页脚 -->\n    <div class=\"footer\">\n      <p>报告生成时间: {now_iso}</p>\n      <p>温馨提示：本报告由AI生成，建议结合实际情况核实细节</p>\n    </div>\n  </div>\n\n  <!-- 前端脚本 -->\n  <script>\n    document.addEventListener('DOMContentLoaded', function() {{\n      // 评分数字动画\n      const scoreElement = document.querySelector('.score');\n      const targetScore = {overall_score};\n      let currentScore = 0;\n      const scoreInterval = setInterval(() => {{\n        currentScore += targetScore / 50;\n        if (currentScore >= targetScore) {{\n          currentScore = targetScore;\n          clearInterval(scoreInterval);\n        }}\n        scoreElement.textContent = currentScore.toFixed(1);\n      }}, 20);\n\n      // 饼图\n      const severityPieCtx = document.getElementById('severityPieChart').getContext('2d');\n      if ({total_issues} > 0) {{\n        new Chart(severityPieCtx, {{\n          type: 'pie',\n          data: {{\n            labels: ['低风险', '中风险', '高风险'],\n            datasets: [{{\n              data: [{severity_low}, {severity_medium}, {severity_high}],\n              backgroundColor: ['#10b98180', '#f59e0b80', '#ef444480'],\n              borderColor: ['#10b981', '#f59e0b', '#ef4444'],\n              borderWidth: 1\n            }}]\n          }},\n          options: {{\n            responsive: true,\n            maintainAspectRatio: false,\n            legend: {{ position: 'bottom' }},\n            tooltip: {{\n              callbacks: {{\n                label: function(ctx) {{\n                  const total = ctx.dataset.data.reduce((a,b)=>a+b,0);\n                  const pct = Math.round((ctx.raw / total) * 100);\n                  return `${{ctx.label}}: ${{ctx.raw}} 个 (${{pct}}%)`;\n                }}\n              }}\n            }}\n          }}\n        }});\n      }} else {{\n        severityPieCtx.fillText('暂无数据', severityPieCtx.canvas.width/2 - 20, severityPieCtx.canvas.height/2);\n      }}\n\n      // 柱状图\n      const categoryBarCtx = document.getElementById('categoryBarChart').getContext('2d');\n      if ({category_labels_str}.length > 0) {{\n        new Chart(categoryBarCtx, {{\n          type: 'bar',\n          data: {{\n            labels: {category_labels_str},\n            datasets: [{{\n              label: '数量',\n              data: {category_values_str},\n              backgroundColor: '#6366f180',\n              borderColor: '#6366f1',\n              borderWidth: 1,\n              borderRadius: 4\n            }}]\n          }},\n          options: {{\n            responsive: true,\n            maintainAspectRatio: false,\n            scales: {{ y: {{ beginAtZero: true, ticks: {{ precision: 0 }} }} }},\n            legend: {{ display: true }},\n            tooltip: {{\n              callbacks: {{\n                label: function(ctx) {{\n                  const total = ctx.dataset.data.reduce((a,b)=>a+b,0);\n                  const pct = total > 0 ? Math.round((ctx.raw / total) * 100) : 0;\n                  return `数量: ${{ctx.raw}} 个 (${{pct}}%)`;\n                }}\n              }}\n            }}\n          }}\n        }});\n      }} else {{\n        categoryBarCtx.fillText('暂无数据', categoryBarCtx.canvas.width/2 - 20, categoryBarCtx.canvas.height/2);\n      }}\n\n      // 表格行高亮\n      document.querySelectorAll('.issue-row').forEach(row => {{\n        row.addEventListener('click', function() {{\n          document.querySelectorAll('.issue-row').forEach(r => r.style.background = '');\n          this.style.background = '#f9fafb';\n        }});\n      }});\n    }});\n  </script>\n</body>\n</html>'''\n\n    # ========== 返回结果 ==========\n    return {\n        \"result\": html_content,\n        \"status\": \"success\",\n        \"message\": \"装修报价单分析报告生成成功\",\n        \"debug_info\": {\n            \"issues_count\": issues_count,\n            \"high_severity_count\": high_severity_count,\n            \"high_risk_ratio\": high_risk_ratio,\n            \"total_issues_calculated\": total_issues\n        }\n    }"
+        language: 3
+        node_inputs:
+            - name: args
+              input:
+                value:
+                    path: structured_output
+                    ref_node: "129061"
+        node_outputs:
+            message:
+                type: string
+                value: null
+            result:
+                type: string
+                value: null
+            status:
+                type: string
+                value: null
+        settingOnError:
+            processType: 1
+            retryTimes: 0
+            switch: false
+            timeoutMs: 60000
+    - id: "150169"
+      type: plugin
+      title: html2url_1
+      icon: https://lf3-static.bytednsdoc.com/obj/eden-cn/dvsmryvd_avi_dvsm/ljhwZthlaukjlkulzlp/icon/icon-Plugin-v2.jpg
+      description: "将html代码发布成在线网页"
+      position:
+        x: 2480
+        y: 106
+      parameters:
+        apiParam:
+            - name: apiID
+              input:
+                type: string
+                value: "7516530863551807526"
+            - name: apiName
+              input:
+                type: string
+                value: "html2url"
+            - name: pluginID
+              input:
+                type: string
+                value: "7516530863551791142"
+            - name: pluginName
+              input:
+                type: string
+                value: "发布网页"
+            - name: pluginVersion
+              input:
+                type: string
+                value: ""
+            - name: tips
+              input:
+                type: string
+                value: ""
+            - name: outDocLink
+              input:
+                type: string
+                value: ""
+        node_inputs:
+            - name: api_key
+              input:
+                type: string
+                value: "sk_e0a702a9337cf745dc97770a982cb3"
+            - name: html_code
+              input:
+                value:
+                    path: result
+                    ref_node: "149605"
+        node_outputs:
+            billing:
+                type: object
+                properties:
+                    balance_after:
+                        type: float
+                        value: null
+                    balance_before:
+                        type: float
+                        value: null
+                    currency:
+                        type: string
+                        value: null
+                    discount_applied:
+                        type: boolean
+                        value: null
+                    error:
+                        type: string
+                        value: null
+                    service_fee:
+                        type: float
+                        value: null
+                    transaction_id:
+                        type: integer
+                        value: null
+                value: null
+            file_url:
+                type: string
+                value: null
+            message:
+                type: string
+                value: null
+            online_url:
+                type: string
+                value: null
+            success:
+                type: boolean
+                value: null
+        settingOnError:
+            processType: 1
+            retryTimes: 0
+            timeoutMs: 180000
+    - id: "196637"
+      type: knowledge
+      title: 知识库检索
+      icon: https://lf3-static.bytednsdoc.com/obj/eden-cn/dvsmryvd_avi_dvsm/ljhwZthlaukjlkulzlp/icon/icon-KnowledgeQuery-v2.jpg
+      description: "在选定的知识中,根据输入变量召回最匹配的信息,并以列表形式返回"
+      position:
+        x: 1100
+        y: 93
+      parameters:
+        datasetParam:
+            - name: datasetList
+              input:
+                type: list
+                items:
+                    type: string
+                    value: null
+                value:
+                    - "7599552313292472354"
+            - name: topK
+              input:
+                type: integer
+                value: "5"
+            - name: useRerank
+              input:
+                type: boolean
+                value: true
+            - name: useRewrite
+              input:
+                type: boolean
+                value: true
+            - name: isPersonalOnly
+              input:
+                type: boolean
+                value: true
+            - name: datasetType
+              input:
+                type: integer
+                value: "1"
+            - name: VolcanoInfoList
+              input:
+                type: list
+                items:
+                    type: object
+                    value: null
+                value:
+                    - datasetID: "7599552313292472354"
+                      volcanoServiceID: "kb-service-aaa0c32412ac306e"
+            - name: strategy
+              input:
+                type: integer
+                value: "0"
+        node_inputs:
+            - name: Query
+              input:
+                value:
+                    path: pdf_content
+                    ref_node: "169436"
+            - name: enableChatHistory
+              input:
+                type: boolean
+                value: false
+            - name: chatHistoryRound
+              input:
+                type: float
+                value: 3
+        node_outputs:
+            outputList:
+                type: list
+                items:
+                    type: object
+                    properties:
+                        documentId:
+                            type: string
+                            value: null
+                        output:
+                            type: string
+                            value: null
+                    value: null
+                value: null
+edges:
+    - source_node: "100001"
+      target_node: "169436"
+    - source_node: "150169"
+      target_node: "900001"
+    - source_node: "196637"
+      target_node: "129061"
+    - source_node: "129061"
+      target_node: "149605"
+    - source_node: "169436"
+      target_node: "196637"
+    - source_node: "149605"
+      target_node: "150169"
