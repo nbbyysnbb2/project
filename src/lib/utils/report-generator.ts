@@ -527,7 +527,7 @@ export async function publishHtmlReport(html: string, fileName: string): Promise
 
     // AI Conductor API 配置
     const API_URL = 'http://plugin.aiconductor.fun/api/html_publish';
-    const API_KEY = 'sk_e0a702a9337cf745dc97770a982cb3';
+    const API_KEY = 'YOUR_API_KEY';
 
     // 构建请求体
     const requestBody = {

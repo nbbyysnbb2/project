@@ -80,7 +80,7 @@ htmlPublishNode - 发布到阿里云OSS
 ### 2. 知识库检索
 - **扣子方案**: 火山引擎知识库
   - Dataset ID: 7599552313292472354
-  - Volcano Service ID: kb-service-aaa0c32412ac306e
+  - Volcano Service ID: YOUR_SERVICE_RESOURCE_ID
   - TopK: 5
 - **LangGraph方案**: 复用现有的 `volcano-knowledge.ts`
   - ServiceResourceId: `YOUR_SERVICE_RESOURCE_ID`
@@ -98,7 +98,7 @@ htmlPublishNode - 发布到阿里云OSS
 
 ### 5. HTML发布
 - **扣子方案**: html2url (API ID: 7516530863551807526)
-  - API Key: sk_e0a702a9337cf745dc97770a982cb3
+  - API Key: YOUR_API_KEY
 - **LangGraph方案**: 使用阿里云OSS存储
   - Bucket: ssy-decoration
   - 路径: `quotation-reports/{filename}`
@@ -131,7 +131,7 @@ htmlPublishNode - 发布到阿里云OSS
 - API ID: 7516530863551807526
 - Plugin ID: 7516530863551791142
 - Plugin Name: 发布网页
-- API Key: sk_e0a702a9337cf745dc97770a982cb3
+- API Key: YOUR_API_KEY
 ```
 
 **注意**: 当前实现使用 `pdf-parse` 和阿里云OSS，已经可以正常工作，无需提供上述API信息。
